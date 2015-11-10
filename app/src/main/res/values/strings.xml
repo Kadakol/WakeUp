@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">WakeUp</string>
+
+    <string name="app_description">Put description here</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="activity_device_admin">Wake Up Admin Activity</string>
+    <string name="device_admin">Wake Up</string>
+    <string name="device_admin_description">Wake Up</string>
+    <string name="add_admin_extra_app_text">This permission is required in order to enable locking your screen using the gesture.\n\nIf you deny this permission, you will still be able to use the wake up feature of the app.</string>
+
+    <string name="on_enabled">Lock Screen permission enabled!</string>
+    <string name="on_disabled">Lock Screen permission disabled!</string>
+    <string name="on_disable_requested">Are you sure you want to disable this?\nGesture Screen Lock will not work for you!</string>
+</resources>
