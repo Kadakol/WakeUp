@@ -1,4 +1,4 @@
-package com.example.akshay.wakeup;
+package com.android.akshay.wakeup;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

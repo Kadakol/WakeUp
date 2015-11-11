@@ -1,4 +1,4 @@
-package com.example.akshay.wakeup;
+package com.android.akshay.wakeup;
 
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
@@ -57,7 +57,6 @@ public class PersistentService extends Service implements SensorEventListener {
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_UI);
-        PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
 
         screenOnReceiver = new ScreenOnReceiver();
         IntentFilter intentFilter = new IntentFilter();
