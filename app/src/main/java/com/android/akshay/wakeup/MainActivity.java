@@ -6,6 +6,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,11 +17,12 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
     public static final String TAG = "MainActivity";
-
+    public static final String THRESHOLD = "THRESHOLD";
     private static final int REQUEST_CODE_ENABLE_ADMIN = 99;
 
     private Intent mPersistentService;
     private NumberPicker numberPicker;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +34,15 @@ public class MainActivity extends Activity {
         numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(10);
-        numberPicker.setValue(2);
-        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                Log.d(TAG, oldVal + " " + newVal);
-            }
-        });
+
+        sharedPreferences = this.getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(THRESHOLD, sharedPreferences.getInt(THRESHOLD, 2));
+        editor.commit();
+
+        numberPicker.setValue(sharedPreferences.getInt(THRESHOLD, 2));
 
         if (!isMyServiceRunning(PersistentService.class)) {
-            mPersistentService.putExtra("data", numberPicker.getValue());
             startService(mPersistentService);
             Toast.makeText(this, "Started service with threshold = 2", Toast.LENGTH_SHORT).show();
         } else {
@@ -56,7 +57,9 @@ public class MainActivity extends Activity {
     }
 
     public void onStartClicked(View v) {
-        mPersistentService.putExtra("data", numberPicker.getValue());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(THRESHOLD, numberPicker.getValue());
+        editor.commit();
         startService(mPersistentService);
         Toast.makeText(this, "Started service with threshold = " + numberPicker.getValue(), Toast.LENGTH_SHORT).show();
     }
@@ -79,8 +82,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE_ENABLE_ADMIN) {
-            if(resultCode != RESULT_OK) {
+        if (requestCode == REQUEST_CODE_ENABLE_ADMIN) {
+            if (resultCode != RESULT_OK) {
                 Toast.makeText(this, "Device Administration permission was denied!", Toast.LENGTH_SHORT).show();
             }
         }

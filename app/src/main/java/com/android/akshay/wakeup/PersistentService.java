@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,7 +18,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.Display;
-import android.widget.Toast;
 
 /**
  * Created by akshayk on 23/10/15.
@@ -41,18 +41,7 @@ public class PersistentService extends Service implements SensorEventListener {
     private ScreenOnReceiver screenOnReceiver;
     private DevicePolicyManager mDPM;
     private ComponentName mDeviceAdminSample;
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        // TODO This wont work after the app has been killed. Put this data in persistent memory and retrieve from there.
-        if (intent != null) {
-            threshold = intent.getExtras().getInt("data") * 1000;
-        } else {
-            threshold = 2 * 1000;
-        }
-        Log.d(TAG, "Setting threshold to " + threshold);
-        return super.onStartCommand(intent, flags, startId);
-    }
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate() {
@@ -75,6 +64,9 @@ public class PersistentService extends Service implements SensorEventListener {
 
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mDeviceAdminSample = new ComponentName(this, AdminActivity.class);
+
+        sharedPreferences = this.getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        threshold = sharedPreferences.getInt(MainActivity.THRESHOLD, 2) * 1000;
     }
 
     @Override
