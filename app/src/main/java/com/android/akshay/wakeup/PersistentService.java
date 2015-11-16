@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.Display;
+import android.widget.Toast;
 
 /**
  * Created by akshayk on 23/10/15.
@@ -29,6 +30,9 @@ public class PersistentService extends Service implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mProximity;
 
+    private PowerManager.WakeLock wakeLock;
+
+    private PowerManager powerManager;
     private int count = 0;
     private int threshold;
     private long time = 0;
@@ -57,6 +61,9 @@ public class PersistentService extends Service implements SensorEventListener {
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_UI);
+
+        powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.FULL_WAKE_LOCK, TAG);
 
         screenOnReceiver = new ScreenOnReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -93,9 +100,10 @@ public class PersistentService extends Service implements SensorEventListener {
             if (((now - time) >= (threshold - 250)) && ((now - time) <= (threshold + 1000))) {
                 if (!isScreenOn) {
                     Log.d(TAG, "Wake up");
-                    Intent intent = new Intent(this, TransientActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+//                    Intent intent = new Intent(this, TransientActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(intent);
+                    wakeLock.acquire(1);
                 } else {
                     if (mDPM.isAdminActive(mDeviceAdminSample)) {
                         Log.d(TAG, "Lock screen");
@@ -124,9 +132,8 @@ public class PersistentService extends Service implements SensorEventListener {
             }
             return screenOn;
         } else {
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             //noinspection deprecation
-            return pm.isScreenOn();
+            return powerManager.isScreenOn();
         }
     }
 
