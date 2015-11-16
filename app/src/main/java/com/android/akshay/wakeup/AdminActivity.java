@@ -5,7 +5,6 @@ import android.app.admin.DeviceAdminReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -39,7 +38,6 @@ public class AdminActivity extends DeviceAdminReceiver {
 
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            Log.d(TAG, "onCreate");
         }
     }
 }

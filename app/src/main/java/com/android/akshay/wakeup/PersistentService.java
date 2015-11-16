@@ -46,7 +46,6 @@ public class PersistentService extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "OnCreate");
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_UI);

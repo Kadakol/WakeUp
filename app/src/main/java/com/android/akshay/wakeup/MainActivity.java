@@ -28,7 +28,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "OnCreate");
         mPersistentService = new Intent(this, PersistentService.class);
 
         numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
@@ -44,16 +43,19 @@ public class MainActivity extends Activity {
 
         if (!isMyServiceRunning(PersistentService.class)) {
             startService(mPersistentService);
-            Toast.makeText(this, "Started service with threshold = 2", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Started service with threshold = 2", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Service is already running", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Service is already running", Toast.LENGTH_SHORT).show();
         }
 
+        DevicePolicyManager mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         ComponentName mDeviceAdminSample = new ComponentName(this, AdminActivity.class);
-        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mDeviceAdminSample);
-        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, this.getString(R.string.add_admin_extra_app_text));
-        startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN);
+        if (!mDPM.isAdminActive(mDeviceAdminSample)) {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mDeviceAdminSample);
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, this.getString(R.string.add_admin_extra_app_text));
+            startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN);
+        }
     }
 
     public void onStartClicked(View v) {
@@ -61,12 +63,12 @@ public class MainActivity extends Activity {
         editor.putInt(THRESHOLD, numberPicker.getValue());
         editor.commit();
         startService(mPersistentService);
-        Toast.makeText(this, "Started service with threshold = " + numberPicker.getValue(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Started service with threshold = " + numberPicker.getValue(), Toast.LENGTH_SHORT).show();
     }
 
     public void onStopClicked(View v) {
         stopService(mPersistentService);
-        Toast.makeText(this, "Stopped service", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Stopped service", Toast.LENGTH_SHORT).show();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
